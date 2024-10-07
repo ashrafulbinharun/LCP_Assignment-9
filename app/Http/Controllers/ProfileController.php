@@ -12,9 +12,6 @@ use Illuminate\View\View;
 
 class ProfileController extends Controller
 {
-    /**
-     * Display the user's profile.
-     */
     public function index(User $user)
     {
         $posts = $user->posts()->latest()->get();
@@ -22,9 +19,6 @@ class ProfileController extends Controller
         return view('profile.index', compact('posts'));
     }
 
-    /**
-     * Display the user's profile form.
-     */
     public function edit($username): View
     {
         $user = User::where('username', $username)->firstOrFail();
@@ -32,19 +26,13 @@ class ProfileController extends Controller
         return view('profile.edit', compact('user'));
     }
 
-    /**
-     * Update the user's profile information.
-     */
     public function update(ProfileUpdateRequest $request, User $user): RedirectResponse
     {
         $user->update($request->validated());
 
-        return to_route('profile.index', $user->username)->with(['success' => 'Profile Updated Successful.']);
+        return back()->with(['success' => 'Profile updated successful']);
     }
 
-    /**
-     * Delete the user's account.
-     */
     public function destroy(Request $request): RedirectResponse
     {
         $request->validateWithBag('userDeletion', [

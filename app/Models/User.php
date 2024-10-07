@@ -3,6 +3,7 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -23,6 +24,7 @@ class User extends Authenticatable
         'username',
         'email',
         'password',
+        'avatar_url',
         'bio',
     ];
 
@@ -47,6 +49,15 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    protected function getAvatar(): Attribute
+    {
+        return Attribute::make(
+            get: fn () => $this->avatar_url
+            ? asset('storage/'.$this->avatar_url)
+            : 'https://ui-avatars.com/api/?name='.$this->name,
+        );
     }
 
     public function posts(): HasMany

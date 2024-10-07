@@ -17,16 +17,17 @@
                         class="inline-flex items-center px-1 pt-1 text-sm font-medium text-gray-600 border-b-2 border-transparent hover:border-gray-300 hover:text-gray-800">People</a>
                 </div>
             </div>
+
             <div class="hidden gap-2 sm:ml-6 sm:flex sm:items-center">
                 <a href="{{ route('posts.create') }}"
                     class="text-gray-900 hover:text-white border-2 border-gray-800 hover:bg-gray-900 focus:ring-2 focus:outline-none focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center hidden md:block">
                     Create Post
                 </a>
 
+                {{-- notification icon  --}}
                 <button type="button"
                     class="p-2 text-gray-800 bg-white rounded-full hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2">
                     <span class="sr-only">View notifications</span>
-                    <!-- Heroicon name: outline/bell -->
                     <svg class="w-6 h-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                         stroke-width="1.5" stroke="currentColor" aria-hidden="true">
                         <path stroke-linecap="round" stroke-linejoin="round"
@@ -34,6 +35,7 @@
                     </svg>
                 </button>
 
+                {{-- mesage icon --}}
                 <button type="button"
                     class="p-2 text-gray-800 bg-white rounded-full hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2">
                     <span class="sr-only">Messages</span>
@@ -44,22 +46,29 @@
                     </svg>
                 </button>
 
-                <!-- Profile dropdown -->
+                {{-- Profile dropdown  --}}
                 <div class="relative ml-3" x-data="{ open: false }">
+                    {{-- User Avatar --}}
                     <div>
                         <button @click="open = !open" type="button"
                             class="flex text-sm bg-white rounded-full focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
                             id="user-menu-button" aria-expanded="false" aria-haspopup="true">
                             <span class="sr-only">Open user menu</span>
-                            <img class="w-8 h-8 rounded-full"
-                                src="https://avatars.githubusercontent.com/u/150423186?v=4" alt="Ashraful Karim" />
+                            @if (auth()->check())
+                                <img class="w-8 h-8 rounded-full" src="{{ auth()->user()->get_avatar }}"
+                                    alt="{{ auth()->user()->name }}" />
+                            @else
+                                <img class="w-8 h-8 rounded-full"
+                                    src="https://avatars.githubusercontent.com/u/150423186?v=4" alt="Guest User" />
+                            @endif
                         </button>
                     </div>
 
-                    <!-- Dropdown menu -->
+                    {{-- Dropdown menu  --}}
                     <div x-show="open" @click.away="open = false"
                         class="absolute right-0 z-10 w-48 py-1 mt-2 origin-top-right bg-white rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
                         role="menu" aria-orientation="vertical" aria-labelledby="user-menu-button" tabindex="-1">
+
                         @if (auth()->check())
                             <a href="{{ route('profile.index', auth()->user()->username) }}"
                                 class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem"
@@ -119,10 +128,9 @@
         </div>
     </div>
 
-    <!-- Mobile menu, show/hide based on menu state. -->
+    {{-- Mobile menu, show/hide based on menu state.  --}}
     <div x-show="mobileMenuOpen" class="sm:hidden" id="mobile-menu">
         <div class="pt-2 pb-3 space-y-1">
-            <!-- Current: "bg-gray-50 border-gray-800 text-gray-700", Default: "border-transparent text-gray-500 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-700" -->
             <a href="#"
                 class="block py-2 pl-3 pr-4 text-base font-medium text-gray-700 border-l-4 border-gray-800 bg-gray-50">Discover</a>
             <a href="#"
@@ -131,33 +139,69 @@
             <a href="#"
                 class="block py-2 pl-3 pr-4 text-base font-medium text-gray-500 border-l-4 border-transparent hover:border-gray-300 hover:bg-gray-50 hover:text-gray-700">People</a>
         </div>
+
+        {{-- Profile dropdown  --}}
         <div class="pt-4 pb-3 border-t border-gray-200">
             <div class="flex items-center px-4">
+                {{-- User Avatar --}}
                 <div class="flex-shrink-0">
-                    <img class="w-10 h-10 rounded-full" src="https://avatars.githubusercontent.com/u/831997"
-                        alt="Ahmed Shamim Hasan Shaon" />
+                    @if (auth()->check())
+                        <img class="w-8 h-8 rounded-full" src="{{ auth()->user()->get_avatar }}"
+                            alt="{{ auth()->user()->name }}" />
+                    @else
+                        <img class="w-8 h-8 rounded-full" src="https://avatars.githubusercontent.com/u/150423186?v=4"
+                            alt="Guest User" />
+                    @endif
                 </div>
                 <div class="ml-3">
-                    <div class="text-base font-medium text-gray-800">
-                        Ahmed Shamim Hasan Shaon
-                    </div>
-                    <div class="text-sm font-medium text-gray-500">shaon@shamim.com</div>
+                    @if (auth()->check())
+                        <h2 class="text-base font-medium text-gray-800">
+                            {{ auth()->user()->name }}
+                        </h2>
+                        <p class="text-sm font-medium text-gray-500">
+                            {{ auth()->user()->email }}
+                        </p>
+                    @else
+                        <div class="text-base font-medium text-gray-800">
+                            Ashraful Karim
+                        </div>
+                        <div class="text-sm font-medium text-gray-500">
+                            ashrafulkarim.dev@gmail.com
+                        </div>
+                    @endif
                 </div>
             </div>
+            {{-- Derpdown Menu --}}
             <div class="mt-3 space-y-1">
-                <a href="#"
-                    class="block px-4 py-2 text-base font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-800">Create
-                    New
-                    Post</a>
-                <a href="./profile.html"
-                    class="block px-4 py-2 text-base font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-800">Your
-                    Profile</a>
-                <a href="./edit-profile.html"
-                    class="block px-4 py-2 text-base font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-800">Edit
-                    Profile</a>
-                <a href="#"
-                    class="block px-4 py-2 text-base font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-800">Sign
-                    out</a>
+                @if (auth()->check())
+                    <a href="{{ route('posts.create') }}"
+                        class="block px-4 py-2 text-base font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-800">Create
+                        New Post
+                    </a>
+                    <a href="{{ route('profile.index', auth()->user()->username) }}"
+                        class="block px-4 py-2 text-base font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-800">Your
+                        Profile
+                    </a>
+                    <a href="{{ route('profile.edit', auth()->user()->username) }}"
+                        class="block px-4 py-2 text-base font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-800">Edit
+                        Profile
+                    </a>
+                    <form action="{{ route('logout') }}" method="POST">
+                        @csrf
+                        <button type="submit"
+                            class="block w-full px-4 py-2 text-sm text-left text-gray-700 hover:bg-gray-100"
+                            role="menuitem" tabindex="-1" id="user-menu-item-2">
+                            Sign out
+                        </button>
+                    </form>
+                @else
+                    <a href="{{ route('login') }}"
+                        class="block px-4 py-2 text-base font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-800">Login
+                    </a>
+                    <a href="{{ route('register') }}"
+                        class="block px-4 py-2 text-base font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-800">Register
+                    </a>
+                @endif
             </div>
         </div>
     </div>

@@ -4,6 +4,19 @@
 
 @section('content')
     <main class="container max-w-xl min-h-screen px-2 mx-auto mt-8 space-y-8 md:px-0">
+
+        {{-- Aleart --}}
+        @if (session('success'))
+            <div class="flex items-center justify-center p-4 mb-4 text-sm font-medium text-green-800 border-2 border-green-300 rounded-lg bg-green-50"
+                role="alert">
+                <span class="sr-only">Success</span>
+                <div class="text-center">{{ session('success') }}</div>
+            </div>
+        @endif
+
+        {{-- Avatar Update Form --}}
+        @include('profile.partials.update-avatar-form')
+
         {{-- Profile Edit Form  --}}
         <form action="{{ route('profile.update', $user->id) }}" method="POST">
             @csrf
@@ -139,6 +152,7 @@
             </div>
         </form>
 
+        {{-- Delete account Form --}}
         @include('profile.partials.delete-user-form')
     </main>
 @endsection

@@ -4,14 +4,6 @@
 
 @section('content')
     <main class="container max-w-2xl min-h-screen px-2 mx-auto mt-8 space-y-8">
-        {{-- Aleart --}}
-        @if (session('success'))
-            <div class="flex items-center justify-center p-4 mb-4 text-sm font-medium text-green-800 border-2 border-green-300 rounded-lg bg-green-50"
-                role="alert">
-                <span class="sr-only">Success</span>
-                <div class="text-center">{{ session('success') }}</div>
-            </div>
-        @endif
 
         {{-- Profile Info --}}
         <section
@@ -44,8 +36,8 @@
                         <div class="flex items-center space-x-3">
                             {{-- User Avatar --}}
                             <div class="flex-shrink-0">
-                                <img class="w-8 h-8 rounded-full"
-                                    src="https://avatars.githubusercontent.com/u/150423186?v=4" alt="Ashraful Karim" />
+                                <img class="w-8 h-8 rounded-full" src="{{ auth()->user()->get_avatar }}"
+                                    alt="{{ auth()->user()->name }}" />
                             </div>
 
                             {{-- User Info --}}
