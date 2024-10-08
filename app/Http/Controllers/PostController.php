@@ -6,6 +6,7 @@ use App\Http\Requests\StorePostRequest;
 use App\Http\Requests\UpdatePostRequest;
 use App\Models\Post;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Storage;
 
 class PostController extends Controller
 {
@@ -16,9 +17,14 @@ class PostController extends Controller
 
     public function store(StorePostRequest $request)
     {
+        $data = $request->validated();
+
+        if ($request->hasFile('image')) {
+            $data['image'] = $request->file('image')->store('post_images', 'public');
+        }
+
         Post::create(array_merge(
-            ['user_id' => auth()->user()->id],
-            $request->validated()
+            ['user_id' => auth()->user()->id], $data
         ));
 
         return redirect()->intended()->with(['success' => 'Post created successfully']);
@@ -40,7 +46,25 @@ class PostController extends Controller
     {
         Gate::authorize('manage', $post);
 
-        $post->update($request->validated());
+        $data = $request->validated();
+
+        // if the user wants to remove the existing image
+        if ($request->remove_image && $post->image) {
+            Storage::disk('public')->delete($post->image);
+            $data['image'] = null;
+        }
+
+        // handle new image upload
+        if ($request->hasFile('image')) {
+            if ($post->image) {
+                Storage::disk('public')->delete($post->image);
+            }
+
+            $imagePath = $request->file('image')->store('post_images', 'public');
+            $data['image'] = $imagePath;
+        }
+
+        $post->update($data);
 
         return redirect()->intended()->with(['success' => 'Post updated successfully']);
     }
@@ -48,6 +72,10 @@ class PostController extends Controller
     public function destroy(Post $post)
     {
         Gate::authorize('manage', $post);
+
+        if ($post->image) {
+            Storage::disk('public')->delete($post->image);
+        }
 
         $post->delete();
 

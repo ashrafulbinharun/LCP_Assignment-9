@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rules\File;
 
 class StorePostRequest extends FormRequest
 {
@@ -23,6 +24,28 @@ class StorePostRequest extends FormRequest
     {
         return [
             'content' => ['required', 'string'],
+            'image' => [
+                'nullable',
+                File::image()->max(2 * 1024),
+                'mimetypes:image/jpeg,image/png,image/jpg',
+            ],
+        ];
+    }
+
+    public function messages(): array
+    {
+        return [
+            'image' => [
+                'max' => 'Post image must not be greater than 2mb.',
+            ],
+        ];
+    }
+
+    public function attributes(): array
+    {
+        return [
+            'content' => 'post content',
+            'image' => 'post image',
         ];
     }
 }

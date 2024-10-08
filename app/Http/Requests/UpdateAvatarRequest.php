@@ -25,9 +25,25 @@ class UpdateAvatarRequest extends FormRequest
         return [
             'avatar' => [
                 'required',
-                File::image()->max(2 * 1024),
+                File::image()->max(1024),
                 'mimetypes:image/jpeg,image/png,image/jpg',
             ],
+        ];
+    }
+
+    public function messages(): array
+    {
+        return [
+            'avatar' => [
+                'max' => 'Profile avatar must not be greater than 1mb.',
+            ],
+        ];
+    }
+
+    public function attributes(): array
+    {
+        return [
+            'avatar' => 'profile avatar',
         ];
     }
 }

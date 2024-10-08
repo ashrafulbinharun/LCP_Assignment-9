@@ -16,7 +16,7 @@ class ProfileController extends Controller
     {
         $posts = $user->posts()->latest()->get();
 
-        return view('profile.index', compact('posts'));
+        return view('profile.index', compact('posts', 'user'));
     }
 
     public function edit($username): View
