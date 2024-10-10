@@ -12,18 +12,18 @@ Route::middleware('auth')->group(function () {
     Route::resource('/posts', PostController::class)
         ->except('index');
 
-    Route::get('/profile/{user:username}', [ProfileController::class, 'index'])
-        ->name('profile.index');
-    Route::patch('/profile/avatar/update', [AvatarController::class, 'update'])
-        ->name('profile.avatar.update');
-    Route::delete('/profile/avatar/delete', [AvatarController::class, 'destroy'])
-        ->name('profile.avatar.delete');
-    Route::get('/profile/{user:username}/edit', [ProfileController::class, 'edit'])
-        ->name('profile.edit');
-    Route::put('/profile/{user}', [ProfileController::class, 'update'])
-        ->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])
-        ->name('profile.destroy');
+    Route::controller(AvatarController::class)->group(function () {
+        Route::patch('avatar/update', 'update')->name('profile.avatar.update');
+        Route::delete('avatar/delete', 'destroy')->name('profile.avatar.delete');
+    });
+
+    Route::controller(ProfileController::class)->group(function () {
+        Route::get('/profile/{user:username}', 'index')->name('profile.index');
+        Route::get('/profile/{user:username}/edit', 'edit')->name('profile.edit');
+        Route::put('/profile/{user}', 'update')->name('profile.update');
+        Route::delete('/profile', 'destroy')->name('profile.destroy');
+    });
+
 });
 
 require __DIR__.'/auth.php';

@@ -75,23 +75,5 @@
         </form>
     </main>
 
-    <script>
-        function postForm() {
-            return {
-                imagePreview: null,
-
-                previewImage(event) {
-                    const file = event.target.files[0];
-                    if (file) {
-                        this.imagePreview = URL.createObjectURL(file);
-                    }
-                },
-
-                removeImage() {
-                    this.imagePreview = null;
-                    this.$refs.pictureInput.value = null;
-                }
-            }
-        }
-    </script>
+    @include('scripts.image-preview-script')
 @endsection
